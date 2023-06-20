@@ -6,6 +6,7 @@ import (
 	"github.com/erfansahebi/lamia_auth/model"
 	"github.com/erfansahebi/lamia_auth/svc"
 	authProto "github.com/erfansahebi/lamia_shared/services/auth"
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -46,6 +47,25 @@ type AuthenticateStruct struct {
 
 func (as *AuthenticateStruct) Validate(ctx context.Context, di di.DIContainerInterface) (err error) {
 	as.TokenDetail, err = di.AuthDAL().FetchToken(ctx, as.Jwt)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+type UserStruct struct {
+	*authProto.GetUserRequest
+	User model.User
+}
+
+func (us *UserStruct) Validate(ctx context.Context, di di.DIContainerInterface) (err error) {
+	userID, err := uuid.Parse(us.UserId)
+	if err != nil {
+		return err
+	}
+
+	us.User, err = di.AuthDAL().FetchUser(ctx, userID)
 	if err != nil {
 		return err
 	}

@@ -90,3 +90,20 @@ func (h *Handler) Authenticate(ctx context.Context, request *authProto.Authentic
 		Id: pendData.TokenDetail.UserID.String(),
 	}, nil
 }
+
+func (h *Handler) GetUser(ctx context.Context, request *authProto.GetUserRequest) (*authProto.GetUserResponse, error) {
+	pendData := validator.UserStruct{GetUserRequest: request}
+	if err := pendData.Validate(ctx, h.Di); err != nil {
+		return nil, err
+	}
+
+	return &authProto.GetUserResponse{
+		User: &authProto.UserStruct{
+			Id:        pendData.User.ID.String(),
+			FirstName: pendData.User.FirstName,
+			LastName:  pendData.User.LastName,
+			Email:     pendData.User.Email,
+			Password:  pendData.User.Password,
+		},
+	}, nil
+}
