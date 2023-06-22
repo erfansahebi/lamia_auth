@@ -2,13 +2,14 @@ package main
 
 import (
 	"context"
-	"errors"
 	"flag"
 	"fmt"
 	"github.com/erfansahebi/lamia_auth/config"
 	"github.com/erfansahebi/lamia_auth/database"
 	"github.com/erfansahebi/lamia_auth/di"
 	"github.com/erfansahebi/lamia_auth/handler"
+	sharedCommon "github.com/erfansahebi/lamia_shared/common"
+	"github.com/erfansahebi/lamia_shared/log"
 	authProto "github.com/erfansahebi/lamia_shared/services/auth"
 	"google.golang.org/grpc"
 	"net"
@@ -23,11 +24,13 @@ func main() {
 
 	configurations, err := config.LoadConfig()
 	if err != nil {
+		log.WithError(err).Fatalf(ctx, "failed to load config")
 		panic(err)
 	}
 
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", configurations.HTTP.Port))
 	if err != nil {
+		log.WithError(err).Fatalf(ctx, "failed to listen tcp")
 		panic(err)
 	}
 
@@ -43,32 +46,37 @@ func main() {
 	flag.Parse()
 
 	cmd := flag.Arg(0)
+
+	log.Infof(ctx, "Starting with command: %s", cmd)
+
 	go func() {
 		switch cmd {
 		case "serve":
 			authProto.RegisterAuthServiceServer(grpcServer, &h)
 
 			if err = grpcServer.Serve(lis); err != nil {
+				log.WithError(err).Fatalf(ctx, "failed to serve grpc server")
 				panic(err)
 			}
 
 			cancel()
 		case "migrate":
 			if err = database.Migrate(ctx, configurations, *migrateSteps); err != nil {
-				fmt.Println("failed to migrate")
+				log.WithError(err).Fatalf(ctx, "failed to migrate")
 				panic(err)
 			}
 
 			cancel()
 		case "makemigration":
 			if err = database.MakeMigration(ctx, configurations, *migrateName); err != nil {
-				fmt.Println("failed to make migration")
+				log.WithError(err).Fatalf(ctx, "failed to make migration")
 				panic(err)
 			}
 
 			cancel()
 		default:
-			panic(errors.New("wrong command"))
+			log.WithError(sharedCommon.ErrWrongCommand).Fatalf(ctx, "wrong command")
+			panic(sharedCommon.ErrWrongCommand)
 		}
 
 	}()
