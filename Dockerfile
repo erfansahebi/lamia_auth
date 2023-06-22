@@ -15,7 +15,7 @@ COPY go.sum .
 # Cache the downloaded dependency in the layer.
 RUN --mount=type=cache,target=/root/.cache/go-build go mod download
 
-COPY ../.. /src/server
+COPY . /src/server
 RUN --mount=type=cache,target=/root/.cache/go-build \
 go get -d -v ./ && \
 go install -v ./

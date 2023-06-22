@@ -1,2 +1,2 @@
 build:
-	docker build -t erfansahebi/lamia_auth
+	docker build -t erfansahebi/lamia_auth .
