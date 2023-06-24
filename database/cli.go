@@ -20,7 +20,6 @@ import (
 )
 
 func Migrate(ctx context.Context, configuration *config.Config, steps int) error {
-
 	db, err := sql.Open("postgres", configuration.GetDbUrl("migrate"))
 	if err != nil {
 		fmt.Println("migrate: failed to open db connection")

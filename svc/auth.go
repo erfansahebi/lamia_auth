@@ -23,32 +23,28 @@ func NewAuthDAL(pgx PgxConn, redis *redis.Client) AuthDALInterface {
 }
 
 func (a *auth) StoreUser(ctx context.Context, user model.User) (model.User, error) {
-	tx, err := a.pgx.Begin(ctx)
-	if err != nil {
-		return model.User{}, err
-	}
+	user.ID = uuid.New()
 
-	defer tx.Rollback(ctx)
-
-	row := tx.QueryRow(
+	row := a.pgx.QueryRow(
 		ctx,
 		`INSERT INTO users (
-                   first_name,
-                   last_name,
-                   email,
-                   password
+                	id,
+	              	first_name,
+	              	last_name,
+	              	email,
+	              	password
 			) VALUES (
-				  $1, $2, $3, $4
+				  	$1, $2, $3, $4, $5
 			) RETURNING id`,
+		user.ID,
 		user.FirstName,
 		user.LastName,
 		user.Email,
 		user.Password,
 	)
 
-	if err = row.Scan(&user.ID); err != nil {
-		return model.User{}, err
-	} else if err = tx.Commit(ctx); err != nil {
+	if err := row.Scan(&user.ID); err != nil {
+		fmt.Println(err)
 		return model.User{}, err
 	}
 

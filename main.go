@@ -28,19 +28,6 @@ func main() {
 		panic(err)
 	}
 
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%s", configurations.HTTP.Port))
-	if err != nil {
-		log.WithError(err).Fatalf(ctx, "failed to listen tcp")
-		panic(err)
-	}
-
-	grpcServer := grpc.NewServer()
-
-	h := handler.Handler{
-		AppCtx: ctx,
-		Di:     di.NewDIContainer(ctx, configurations),
-	}
-
 	migrateSteps := flag.Int("migrate", 0, "number of steps to migrate")
 	migrateName := flag.String("mname", "", "migration name")
 	flag.Parse()
@@ -52,6 +39,20 @@ func main() {
 	go func() {
 		switch cmd {
 		case "serve":
+			log.Infof(context.Background(), "API Server starting on: %s:%s", configurations.HTTP.Host, configurations.HTTP.Port)
+			lis, err := net.Listen("tcp", fmt.Sprintf("%s:%s", configurations.HTTP.Host, configurations.HTTP.Port))
+			if err != nil {
+				log.WithError(err).Fatalf(ctx, "failed to listen tcp")
+				panic(err)
+			}
+
+			grpcServer := grpc.NewServer()
+
+			h := handler.Handler{
+				AppCtx: ctx,
+				Di:     di.NewDIContainer(ctx, configurations),
+			}
+
 			authProto.RegisterAuthServiceServer(grpcServer, &h)
 
 			if err = grpcServer.Serve(lis); err != nil {

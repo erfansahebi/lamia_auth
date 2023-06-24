@@ -6,7 +6,7 @@ WORKDIR /src/server
 
 RUN wget -qO- https://raw.githubusercontent.com/cosmtrek/air/master/install.sh | sh -s -- -b $(go env GOPATH)/bin
 
-RUN apk add git
+RUN apk --update add ca-certificates git
 
 # Copy golang dependency manifests
 COPY go.mod .
@@ -19,3 +19,5 @@ COPY . /src/server
 RUN --mount=type=cache,target=/root/.cache/go-build \
 go get -d -v ./ && \
 go install -v ./
+
+EXPOSE 50052
