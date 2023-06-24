@@ -44,7 +44,6 @@ func (a *auth) StoreUser(ctx context.Context, user model.User) (model.User, erro
 	)
 
 	if err := row.Scan(&user.ID); err != nil {
-		fmt.Println(err)
 		return model.User{}, err
 	}
 

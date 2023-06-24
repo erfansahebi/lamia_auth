@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/erfansahebi/lamia_auth/config"
+	"github.com/erfansahebi/lamia_shared/log"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -22,13 +23,13 @@ import (
 func Migrate(ctx context.Context, configuration *config.Config, steps int) error {
 	db, err := sql.Open("postgres", configuration.GetDbUrl("migrate"))
 	if err != nil {
-		fmt.Println("migrate: failed to open db connection")
+		log.WithError(err).Fatalf(ctx, "migrate: failed to open db connection")
 		return err
 	}
 
 	driver, err := pgx.WithInstance(db, &pgx.Config{})
 	if err != nil {
-		fmt.Println("migrate: failed to get db driver")
+		log.WithError(err).Fatalf(ctx, "migrate: failed to get db driver")
 		return err
 	}
 
@@ -36,7 +37,7 @@ func Migrate(ctx context.Context, configuration *config.Config, steps int) error
 		"file://"+configuration.Migration.Directory,
 		(*configuration).Database.Name, driver)
 	if err != nil {
-		fmt.Println("migrate: failed to get migrate instances")
+		log.WithError(err).Fatalf(ctx, "migrate: failed to get migrate instances")
 		return err
 	}
 
@@ -53,11 +54,11 @@ func Migrate(ctx context.Context, configuration *config.Config, steps int) error
 
 	switch {
 	case err == nil:
-		fmt.Println("Successfully migrated")
+		log.Infof(ctx, "Successfully migrated")
 	case errors.Is(err, goMigrate.ErrNoChange):
-		fmt.Println("No changes")
+		log.Infof(ctx, "No changes")
 	default:
-		fmt.Println("Failed to migrate")
+		log.WithError(err).Fatalf(ctx, "failed to migrate")
 	}
 
 	return err

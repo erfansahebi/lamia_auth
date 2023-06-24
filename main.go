@@ -39,7 +39,7 @@ func main() {
 	go func() {
 		switch cmd {
 		case "serve":
-			log.Infof(context.Background(), "API Server starting on: %s:%s", configurations.HTTP.Host, configurations.HTTP.Port)
+			log.Infof(ctx, "API Server starting on: %s:%s", configurations.HTTP.Host, configurations.HTTP.Port)
 			lis, err := net.Listen("tcp", fmt.Sprintf("%s:%s", configurations.HTTP.Host, configurations.HTTP.Port))
 			if err != nil {
 				log.WithError(err).Fatalf(ctx, "failed to listen tcp")
@@ -87,7 +87,7 @@ func main() {
 
 	select {
 	case s := <-sig:
-		fmt.Printf("Received %s, graceful shut down...", s.String())
+		log.Infof(ctx, "Received %s, graceful shut down...", s.String())
 		cancel()
 	case <-ctx.Done():
 	}
