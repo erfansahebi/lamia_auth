@@ -25,8 +25,8 @@ github.com/docker/distribution v2.8.2+incompatible h1:T3de5rq0dB1j30rp0sA2rER+m3
 github.com/docker/docker v20.10.24+incompatible h1:Ugvxm7a8+Gz6vqQYQQ2W7GYq5EUPaAiuPgIfVyI3dYE=
 github.com/docker/go-connections v0.4.0 h1:El9xVISelRB7BuFusrZozjnkIM5YnzCViNKohAFqRJQ=
 github.com/docker/go-units v0.5.0 h1:69rxXcBk27SvSaaxTtLh/8llcHD8vYHT7WSdRZ/jvr4=
-github.com/erfansahebi/lamia_shared v1.0.15 h1:FU6aSzatvnOYn3/KbJ49+LZK3UZRBTuI9l3740nGb4Y=
-github.com/erfansahebi/lamia_shared v1.0.15/go.mod h1:k9wzTMOph1JmKO5irm39j11yMXtP9DH05/4k7jC2irk=
+github.com/erfansahebi/lamia_shared v1.0.18 h1:AMX5wS/3bRv5rwWdi4cBPrTmg0T43gbUQxUh0w7B8Qk=
+github.com/erfansahebi/lamia_shared v1.0.18/go.mod h1:k9wzTMOph1JmKO5irm39j11yMXtP9DH05/4k7jC2irk=
 github.com/go-kit/log v0.1.0/go.mod h1:zbhenjAZHb184qTLMA9ZjW7ThYL0H2mk7Q6pNt4vbaY=
 github.com/go-logfmt/logfmt v0.5.0/go.mod h1:wCYkCAKZfumFQihp8CzCvQ3paCTfi41vtzG1KdI/P7A=
 github.com/go-stack/stack v1.8.0/go.mod h1:v0f6uXyyMGvRgIKkXu+yp6POWl0qKG85gN/melR3HDY=

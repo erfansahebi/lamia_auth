@@ -153,6 +153,10 @@ func (a *auth) FetchToken(ctx context.Context, token string) (fetchedToken model
 	return fetchedToken, nil
 }
 
+func (a *auth) DeleteToken(ctx context.Context, token string) {
+	a.redis.Del(ctx, a.generateTokenKey(token))
+}
+
 func (a *auth) generateToken() string {
 	return uuid.New().String()
 }

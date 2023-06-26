@@ -80,6 +80,12 @@ func (h *Handler) Login(ctx context.Context, request *authProto.LoginRequest) (*
 	}, nil
 }
 
+func (h *Handler) Logout(ctx context.Context, request *authProto.LogoutRequest) (*authProto.LogoutResponse, error) {
+	h.Di.AuthDAL().DeleteToken(ctx, request.AuthorizationToken)
+
+	return &authProto.LogoutResponse{}, nil
+}
+
 func (h *Handler) Authenticate(ctx context.Context, request *authProto.AuthenticateRequest) (*authProto.AuthenticateResponse, error) {
 	pendData := validator.AuthenticateStruct{AuthenticateRequest: request}
 	if err := pendData.Validate(ctx, h.Di); err != nil {

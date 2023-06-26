@@ -14,4 +14,5 @@ type AuthDALInterface interface {
 
 	StoreToken(ctx context.Context, tokenDetail model.Token, expireDuration uint) (tokenString string, err error)
 	FetchToken(ctx context.Context, token string) (fetchedToken model.Token, err error)
+	DeleteToken(ctx context.Context, token string)
 }
