@@ -36,7 +36,7 @@ func (h *Handler) Register(ctx context.Context, request *authProto.RegisterReque
 		UserID:    registeredUser.ID,
 		IssuedAt:  time.Time{},
 		ExpiredAt: time.Time{},
-	}, h.Di.Config().JWT.Duration)
+	}, h.Di.Config().AuthorizationToken.Duration)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +49,7 @@ func (h *Handler) Register(ctx context.Context, request *authProto.RegisterReque
 			Email:     registeredUser.Email,
 			Password:  registeredUser.Password,
 		},
-		Jwt: tokenString,
+		AuthorizationToken: tokenString,
 	}, nil
 }
 
@@ -63,7 +63,7 @@ func (h *Handler) Login(ctx context.Context, request *authProto.LoginRequest) (*
 		UserID:    pendData.FetchedUser.ID,
 		IssuedAt:  time.Time{},
 		ExpiredAt: time.Time{},
-	}, h.Di.Config().JWT.Duration)
+	}, h.Di.Config().AuthorizationToken.Duration)
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +76,7 @@ func (h *Handler) Login(ctx context.Context, request *authProto.LoginRequest) (*
 			Email:     pendData.FetchedUser.Email,
 			Password:  pendData.FetchedUser.Password,
 		},
-		Jwt: tokenString,
+		AuthorizationToken: tokenString,
 	}, nil
 }
 

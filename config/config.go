@@ -16,9 +16,8 @@ type Config struct {
 		DB       int    `env:"REDIS_DB"`
 	}
 
-	JWT struct {
-		Secret   string `env:"JWT_SECRET"`
-		Duration uint   `env:"JWT_EXPIRE_DURATION_MINUTE"`
+	AuthorizationToken struct {
+		Duration uint `env:"AUTHORIZATION_TOKEN_EXPIRE_DURATION_MINUTE"`
 	}
 }
 

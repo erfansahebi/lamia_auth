@@ -1,7 +1,9 @@
 package di
 
 import (
+	"context"
 	"github.com/erfansahebi/lamia_auth/config"
+	"github.com/erfansahebi/lamia_shared/log"
 	authProto "github.com/erfansahebi/lamia_shared/services/auth"
 	"google.golang.org/grpc"
 )
@@ -13,12 +15,14 @@ type AuthServiceInterface interface {
 }
 
 type authService struct {
+	ctx           context.Context
 	configuration *config.Config
 	client        authProto.AuthServiceClient
 }
 
-func NewAuthService(configuration *config.Config) AuthServiceInterface {
+func NewAuthService(ctx context.Context, configuration *config.Config) AuthServiceInterface {
 	return &authService{
+		ctx:           ctx,
 		configuration: configuration,
 	}
 }
@@ -29,6 +33,7 @@ func (s *authService) Configuration() *config.Config {
 
 func (s *authService) Client() authProto.AuthServiceClient {
 	if err := s.initClient(); err != nil {
+		log.WithError(err).Fatalf(s.ctx, "error in init client service")
 		panic(err)
 	}
 
@@ -42,6 +47,7 @@ func (s *authService) initClient() error {
 
 	cc, err := grpc.Dial(s.Configuration().GetHttpUrl(), grpc.WithInsecure())
 	if err != nil {
+		log.WithError(err).Fatalf(s.ctx, "error in crete client connection")
 		return err
 	}
 

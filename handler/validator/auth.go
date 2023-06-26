@@ -33,7 +33,13 @@ func (ls *LoginStruct) Validate(ctx context.Context, di di.DIContainerInterface)
 		return err
 	}
 
-	if err = bcrypt.CompareHashAndPassword([]byte(ls.FetchedUser.Password), []byte(ls.Password)); err != nil {
+	err = bcrypt.CompareHashAndPassword([]byte(ls.FetchedUser.Password), []byte(ls.Password))
+	switch err {
+	case nil:
+		break
+	case bcrypt.ErrMismatchedHashAndPassword:
+		return svc.ErrUserDoesNotExists
+	default:
 		return err
 	}
 
@@ -46,7 +52,7 @@ type AuthenticateStruct struct {
 }
 
 func (as *AuthenticateStruct) Validate(ctx context.Context, di di.DIContainerInterface) (err error) {
-	as.TokenDetail, err = di.AuthDAL().FetchToken(ctx, as.Jwt)
+	as.TokenDetail, err = di.AuthDAL().FetchToken(ctx, as.AuthorizationToken)
 	if err != nil {
 		return err
 	}

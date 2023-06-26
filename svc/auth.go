@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/erfansahebi/lamia_auth/model"
+	"github.com/erfansahebi/lamia_shared/log"
 	"github.com/google/uuid"
 	"github.com/redis/go-redis/v9"
 	"time"
@@ -80,7 +81,7 @@ func (a *auth) FetchUser(ctx context.Context, userID uuid.UUID) (fetchedUser mod
 		return fetchedUser, nil
 	}
 
-	return model.User{}, ErrEntryNotFound
+	return model.User{}, ErrUserDoesNotExists
 }
 
 func (a *auth) FetchUserByEmail(ctx context.Context, email string) (fetchedUser model.User, err error) {
@@ -113,16 +114,22 @@ func (a *auth) FetchUserByEmail(ctx context.Context, email string) (fetchedUser 
 		return fetchedUser, nil
 	}
 
-	return model.User{}, ErrEntryNotFound
+	return model.User{}, ErrUserDoesNotExists
 }
 
 func (a *auth) StoreToken(ctx context.Context, tokenDetail model.Token, expireDuration uint) (tokenString string, err error) {
 	tokenString = a.generateToken()
 
 	tokenDetail.IssuedAt = time.Now()
-	tokenDetail.ExpiredAt = time.Now().Add(time.Duration(expireDuration) * time.Minute)
+	tokenDetail.ExpiredAt = tokenDetail.IssuedAt.Add(time.Duration(expireDuration) * time.Minute)
 
-	a.redis.HSet(ctx, a.generateTokenKey(tokenString), tokenDetail, time.Duration(expireDuration)*time.Minute)
+	data, err := json.Marshal(tokenDetail)
+	if err != nil {
+		log.WithError(err).Fatalf(ctx, "error in store data on redis %v", tokenDetail)
+		return "", err
+	}
+
+	a.redis.Set(ctx, a.generateTokenKey(tokenString), data, time.Duration(expireDuration)*time.Minute)
 
 	return tokenString, nil
 }
@@ -130,6 +137,7 @@ func (a *auth) StoreToken(ctx context.Context, tokenDetail model.Token, expireDu
 func (a *auth) FetchToken(ctx context.Context, token string) (fetchedToken model.Token, err error) {
 	fetchedData, err := a.redis.Get(ctx, a.generateTokenKey(token)).Result()
 	if err != nil && err.Error() != "redis: nil" {
+		log.WithError(err).Fatalf(ctx, "error in fetch data from redis")
 		return fetchedToken, err
 	}
 
@@ -138,6 +146,7 @@ func (a *auth) FetchToken(ctx context.Context, token string) (fetchedToken model
 	}
 
 	if err = json.Unmarshal([]byte(fetchedData), &fetchedToken); err != nil {
+		log.WithError(err).Fatalf(ctx, "error in unmarshal data from redis")
 		return fetchedToken, err
 	}
 

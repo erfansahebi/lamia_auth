@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/erfansahebi/lamia_auth/config"
 	"github.com/erfansahebi/lamia_auth/svc"
+	"github.com/erfansahebi/lamia_shared/log"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/redis/go-redis/v9"
 )
@@ -41,6 +42,7 @@ func (d *diContainer) Config() *config.Config {
 
 func (d *diContainer) Service() AuthServiceInterface {
 	if err := d.initService(); err != nil {
+		log.WithError(err).Fatalf(d.ctx, "error in init service")
 		panic(err)
 	}
 
@@ -52,7 +54,7 @@ func (d *diContainer) initService() error {
 		return nil
 	}
 
-	d.service = NewAuthService(d.configuration)
+	d.service = NewAuthService(d.ctx, d.configuration)
 
 	return nil
 }
@@ -64,6 +66,7 @@ func (d *diContainer) getPgxConnection(dbName string) (*pgxpool.Pool, error) {
 
 	pgx, err := pgxpool.Connect(d.ctx, d.Config().GetDbUrl(dbName))
 	if err != nil {
+		log.WithError(err).Fatalf(d.ctx, "error in pgxpool connection")
 		return nil, err
 	}
 
@@ -74,6 +77,7 @@ func (d *diContainer) getPgxConnection(dbName string) (*pgxpool.Pool, error) {
 
 func (d *diContainer) AuthDAL() svc.AuthDALInterface {
 	if err := d.initAuthDAL(); err != nil {
+		log.WithError(err).Fatalf(d.ctx, "error in init auth dal")
 		panic(err)
 	}
 
@@ -87,6 +91,7 @@ func (d *diContainer) initAuthDAL() error {
 
 	pgxConn, err := d.getPgxConnection("app")
 	if err != nil {
+		log.WithError(err).Fatalf(d.ctx, "error in pgx connection")
 		return err
 	}
 
@@ -97,6 +102,7 @@ func (d *diContainer) initAuthDAL() error {
 
 func (d *diContainer) getRedisClient() *redis.Client {
 	if err := d.initRedisClient(); err != nil {
+		log.WithError(err).Fatalf(d.ctx, "error in init redis client")
 		panic(err)
 	}
 
@@ -116,6 +122,7 @@ func (d *diContainer) initRedisClient() error {
 	})
 
 	if _, err := client.Ping(d.ctx).Result(); err != nil {
+		log.WithError(err).Fatalf(d.ctx, "error in redis connection")
 		return err
 	}
 
