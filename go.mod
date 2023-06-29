@@ -3,7 +3,7 @@ module github.com/erfansahebi/lamia_auth
 go 1.20
 
 require (
-	github.com/erfansahebi/lamia_shared v1.0.19
+	github.com/erfansahebi/lamia_shared v1.0.20
 	github.com/golang-migrate/migrate/v4 v4.16.2
 	github.com/google/uuid v1.3.0
 	github.com/ilyakaznacheev/cleanenv v1.4.2
