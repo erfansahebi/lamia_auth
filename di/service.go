@@ -3,8 +3,8 @@ package di
 import (
 	"context"
 	"github.com/erfansahebi/lamia_auth/config"
-	"github.com/erfansahebi/lamia_shared/log"
-	authProto "github.com/erfansahebi/lamia_shared/services/auth"
+	"github.com/erfansahebi/lamia_shared/go/log"
+	authProto "github.com/erfansahebi/lamia_shared/go/proto/auth"
 	"google.golang.org/grpc"
 )
 

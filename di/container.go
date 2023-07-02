@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/erfansahebi/lamia_auth/config"
 	"github.com/erfansahebi/lamia_auth/svc"
-	"github.com/erfansahebi/lamia_shared/log"
+	"github.com/erfansahebi/lamia_shared/go/log"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/redis/go-redis/v9"
 )

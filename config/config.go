@@ -1,12 +1,12 @@
 package config
 
 import (
-	"github.com/erfansahebi/lamia_shared/services"
+	"github.com/erfansahebi/lamia_shared/go/common"
 	"github.com/ilyakaznacheev/cleanenv"
 )
 
 type Config struct {
-	services.Config
+	common.Config
 
 	Redis struct {
 		Host     string `env:"REDIS_HOST"`

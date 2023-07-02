@@ -7,7 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/erfansahebi/lamia_auth/config"
-	"github.com/erfansahebi/lamia_shared/log"
+	"github.com/erfansahebi/lamia_shared/go/log"
 	"os"
 	"path/filepath"
 	"strconv"

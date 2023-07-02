@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/erfansahebi/lamia_auth/model"
-	"github.com/erfansahebi/lamia_shared/log"
+	"github.com/erfansahebi/lamia_shared/go/log"
 	"github.com/google/uuid"
 	"github.com/redis/go-redis/v9"
 	"time"

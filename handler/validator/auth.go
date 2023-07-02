@@ -5,7 +5,7 @@ import (
 	"github.com/erfansahebi/lamia_auth/di"
 	"github.com/erfansahebi/lamia_auth/model"
 	"github.com/erfansahebi/lamia_auth/svc"
-	authProto "github.com/erfansahebi/lamia_shared/services/auth"
+	authProto "github.com/erfansahebi/lamia_shared/go/proto/auth"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )

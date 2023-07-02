@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/erfansahebi/lamia_auth/handler/validator"
 	"github.com/erfansahebi/lamia_auth/model"
-	authProto "github.com/erfansahebi/lamia_shared/services/auth"
+	authProto "github.com/erfansahebi/lamia_shared/go/proto/auth"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 	"time"
